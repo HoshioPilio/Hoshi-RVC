@@ -49,6 +49,11 @@ class Inference:
         if not os.path.exists("./hubert_base.pt"):
             wget.download(
                 "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/hubert_base.pt", out="./hubert_base.pt")
+        
+        if not os.path.exists("./rmvpe.pt"):
+            wget.download(
+                "https://huggingface.co/lj1995/VoiceConversionWebUI/blob/main/rmvpe.pt", out="./rmvpe.pt"
+            )
     
     @property
     def id(self):
