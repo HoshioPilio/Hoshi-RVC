@@ -52,7 +52,7 @@ class Inference:
         
         if not os.path.exists("./rmvpe.pt"):
             wget.download(
-                "https://huggingface.co/lj1995/VoiceConversionWebUI/blob/main/rmvpe.pt", out="./rmvpe.pt"
+                "https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/rmvpe.pt", out="./rmvpe.pt"
             )
     
     @property
