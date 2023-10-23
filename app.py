@@ -5,6 +5,7 @@ import zipfile
 import hashlib
 from utils.model import model_downloader, get_model
 import requests
+import json
 
 api_url = "https://rvc-models-api.onrender.com/uploadfile/"
 
@@ -85,7 +86,7 @@ def post_model(name, model_url, version, creator):
     # Comprobar la respuesta
     if response.status_code == 200:
         result = response.json()
-        return result
+        return json.dumps(result, indent=4)
     else:
         print("Error al cargar el archivo:", response.status_code)
         return result
