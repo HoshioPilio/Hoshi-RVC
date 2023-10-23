@@ -22,7 +22,7 @@ def model_downloader(url, zip_path, dest_path):
         print(f"Descargando desde drive...")
         try:
             filename = gdown.download(url, os.path.join(dest_folder, f"{uuid.uuid4()}.zip"), fuzzy=True)
-            return filename
+            return os.path.basename(filename)
         except:
             print("El intento de descargar con drive no funcionó")
             return None
