@@ -9,6 +9,8 @@ __pycache__
 hubert_base.pt
 /logs
 /env
+/zips/
+/unzips/
 .venv
 alexforkINSTALL.bat
 Changelog_CN.md
