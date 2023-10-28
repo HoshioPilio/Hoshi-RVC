@@ -70,6 +70,13 @@ def infer(model, f0_method, audio_file):
 def post_model(name, model_url, version, creator):
     modelname = model_downloader(model_url, zips_folder, unzips_folder)
     model_files = get_model(unzips_folder, modelname)
+    
+    if not model_files:
+        return "No se encontrado un modelo valido, verifica el contenido del enlace e intentalo más tarde."
+
+    if not model_files.get('pth'):
+        return "No se encontrado un modelo valido, verifica el contenido del enlace e intentalo más tarde."
+    
     md5_hash = calculate_md5(os.path.join(unzips_folder,model_files['pth']))
     zipfile = compress(modelname, list(model_files.values()))
     file_to_upload = open(zipfile, "rb")

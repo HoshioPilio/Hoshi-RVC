@@ -100,27 +100,12 @@ def model_downloader(url, zip_path, dest_path):
     else:
         return None
 
-
-def get_models(weight_path):
-    # Obtener todos los elementos en la ruta
-    files = os.listdir(weight_path)
-    # Filtrar solo los directorios
-    return [file for file in files if os.path.isdir(os.path.join(weight_path, file))]
-
-
 def get_model(weight_path, modelname):
     resources = {}
     for root, dirs, files in os.walk(os.path.join(weight_path, modelname)):
         for file in files:
             if file.endswith('.index'):
                 resources['index'] =  os.path.relpath(os.path.join(root, file))
-            if file.endswith('.pth'):
+            if file.endswith('.pth') and not 'G_' in file and not 'D_' in file:
                 resources['pth'] =  os.path.relpath(os.path.join(root, file), start=weight_path)
     return resources
-
-
-def get_audios(audios_path):
-    # Obtener todos los elementos en la ruta
-    files = os.listdir(audios_path)
-    # Filtrar solo los directorios
-    return [file for file in files if not os.path.isdir(os.path.join(audios_path, file)) and os.path.join(audios_path, file).endswith(('.mp3', '.wav'))]
