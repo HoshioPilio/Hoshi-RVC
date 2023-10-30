@@ -102,7 +102,7 @@ def post_model(name, model_url, version, creator):
         return result
 
 def search_model(name):
-    web_service_url = "https://script.google.com/macros/s/AKfycbzfIOiwmPj-q8-hEyvjRQfgLtO7ESolmtsQmnNheCujwnitDApBSjgTecdfXb8f2twT/exec"
+    web_service_url = "https://script.google.com/macros/s/AKfycbyRaNxtcuN8CxUrcA_nHW6Sq9G2QJor8Z2-BJUGnQ2F_CB8klF4kQL--U2r2MhLFZ5J/exec"
     response = requests.post(web_service_url, json={
         'type': 'search_by_filename',
         'name': name
@@ -111,13 +111,21 @@ def search_model(name):
     response.raise_for_status()  # Lanza una excepción en caso de error
     json_response = response.json()
     cont = 0
+    result.append("""| Nombre del modelo | Url | Epoch | Sample Rate |
+                  | ---------------- | -------------- |:------:|:-----------:|
+                  """)
+    yield "<br />".join(result)
     if json_response.get('ok', None):
         for model in json_response['ocurrences']:
             if cont < 20:
-                model_name = model.get('name', 'N/A')
+                model_name = str(model.get('name', 'N/A')).strip()
                 model_url = model.get('url', 'N/A')
-                result.append(f"**Nombre del modelo: {model_name}**</br>{model_url}</br>")
-                yield "</br>".join(result)
+                epoch = model.get('epoch', 'N/A')
+                sr = model.get('sr', 'N/A')
+                line = f"""|{model_name}|<a>{model_url}</a>|{epoch}|{sr}|
+                """
+                result.append(line)
+                yield "".join(result)
             cont += 1
             
 def update_tts_methods_voice(select_value):
