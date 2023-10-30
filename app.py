@@ -6,6 +6,8 @@ import hashlib
 from utils.model import model_downloader, get_model
 import requests
 import json
+from tts.constants import VOICE_METHODS, BARK_VOICES, EDGE_VOICES
+from tts.conversion import tts_infer
 
 api_url = "https://rvc-models-api.onrender.com/uploadfile/"
 
@@ -67,6 +69,7 @@ def infer(model, f0_method, audio_file):
     else:
         return
     
+
 def post_model(name, model_url, version, creator):
     modelname = model_downloader(model_url, zips_folder, unzips_folder)
     model_files = get_model(unzips_folder, modelname)
@@ -116,6 +119,12 @@ def search_model(name):
                 result.append(f"**Nombre del modelo: {model_name}**</br>{model_url}</br>")
                 yield "</br>".join(result)
             cont += 1
+            
+def update_tts_methods_voice(select_value):
+    if select_value == "Edge-tts":
+        return gr.update(choices=EDGE_VOICES)
+    elif select_value == "Bark-tts":
+        return gr.update(choices=BARK_VOICES)
 
 with gr.Blocks() as app:
     gr.HTML("<h1> Simple RVC Inference - by Juuxn 💻 </h1>")
@@ -133,6 +142,30 @@ with gr.Blocks() as app:
                             
         btn = gr.Button(value="Convertir")
         btn.click(infer, inputs=[model_url, f0_method, audio_path], outputs=[vc_output1, vc_output2])
+        
+    with gr.TabItem("TTS"):
+        with gr.Row():
+            tts_text = gr.Textbox(
+                label="Texto:",
+                placeholder="Texto que deseas convertir a voz...",
+                lines=6,
+            )
+
+        with gr.Column():
+            with gr.Row():
+                tts_model_url = gr.Textbox(placeholder="https://huggingface.co/AIVER-SE/BillieEilish/resolve/main/BillieEilish.zip", label="Url del modelo RVC", show_label=True)
+                
+            with gr.Column():
+                tts_method = gr.Dropdown(choices=VOICE_METHODS, value="Edge-tts", label="Método TTS:", visible=False)
+                tts_model = gr.Dropdown(choices=EDGE_VOICES, label="Modelo TTS:", visible=True, interactive=True)
+                tts_method.change(fn=update_tts_methods_voice, inputs=[tts_method], outputs=[tts_model])
+                    
+            with gr.Row():
+                tts_vc_output1 = gr.Textbox(label="Salida")
+                tts_vc_output2 = gr.Audio(label="Audio de salida")   
+            
+        tts_btn = gr.Button(value="Convertir")
+        tts_btn.click(fn=tts_infer, inputs=[tts_text, tts_model_url, tts_method, tts_model], outputs=[tts_vc_output1, tts_vc_output2])
         
     with gr.Tab("Recursos"):
         gr.HTML("<h4>Buscar modelos</h4>")
@@ -156,5 +189,58 @@ with gr.Blocks() as app:
             
         btn_post_model = gr.Button(value="Publicar")
         btn_post_model.click(fn=post_model, inputs=[post_name, post_model_url, post_version, post_creator], outputs=[post_output])
+                
+
+        #     with gr.Column():
+        #         model_voice_path07 = gr.Dropdown(
+        #             label=i18n("RVC Model:"),
+        #             choices=sorted(names),
+        #             value=default_weight,
+        #         )
+        #         best_match_index_path1, _ = match_index(
+        #             model_voice_path07.value
+        #         )
+
+        #         file_index2_07 = gr.Dropdown(
+        #             label=i18n("Select the .index file:"),
+        #             choices=get_indexes(),
+        #             value=best_match_index_path1,
+        #             interactive=True,
+        #             allow_custom_value=True,
+        #         )
+        # with gr.Row():
+        #     refresh_button_ = gr.Button(i18n("Refresh"), variant="primary")
+        #     refresh_button_.click(
+        #         fn=change_choices2,
+        #         inputs=[],
+        #         outputs=[model_voice_path07, file_index2_07],
+        #     )
+        # with gr.Row():
+        #     original_ttsvoice = gr.Audio(label=i18n("Audio TTS:"))
+        #     ttsvoice = gr.Audio(label=i18n("Audio RVC:"))
+
+        # with gr.Row():
+        #     button_test = gr.Button(i18n("Convert"), variant="primary")
+
+        # button_test.click(
+        #     tts.use_tts,
+        #     inputs=[
+        #         text_test,
+        #         tts_test,
+        #         model_voice_path07,
+        #         file_index2_07,
+        #         # transpose_test,
+        #         vc_transform0,
+        #         f0method8,
+        #         index_rate1,
+        #         crepe_hop_length,
+        #         f0_autotune,
+        #         ttsmethod_test,
+        #     ],
+        #     outputs=[ttsvoice, original_ttsvoice],
+        # )
+
     
-    app.queue(concurrency_count=511, max_size=1022).launch(share=True)
+    
+    app.queue(concurrency_count=511, max_size=1022).launch()
+    #share=True
