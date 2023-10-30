@@ -133,7 +133,7 @@ with gr.Blocks() as app:
         model_url = gr.Textbox(placeholder="https://huggingface.co/AIVER-SE/BillieEilish/resolve/main/BillieEilish.zip", label="Url del modelo", show_label=True)
         audio_path = gr.Audio(label="Archivo de audio", show_label=True, type="filepath", )
         f0_method = gr.Dropdown(choices=["harvest", "pm", "crepe", "crepe-tiny", "mangio-crepe", "mangio-crepe-tiny", "rmvpe"], 
-                                value="harvest", 
+                                value="rmvpe", 
                                 label="Algoritmo", show_label=True)
         # Salida
         with gr.Row():
