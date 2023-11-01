@@ -9,6 +9,7 @@ from inference import Inference
 import asyncio
 from elevenlabs import voices, generate, save
 from elevenlabs.api.error import UnauthenticatedRateLimitError
+# Not working in windows
 from neon_tts_plugin_coqui import CoquiTTS
 import tempfile
 
@@ -73,7 +74,7 @@ def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key, language)
         success = True
         
     if tts_method == 'ElevenLabs':
-        if len(tts_text) > 2500:
+        if len(tts_text) > 2499:
             return "El límite de cuentas no logeadas es de 2500 caracteres.", None
         try:
             audio = generate(
