@@ -166,7 +166,7 @@ with gr.Blocks() as app:
                 tts_model_url = gr.Textbox(placeholder="https://huggingface.co/AIVER-SE/BillieEilish/resolve/main/BillieEilish.zip", label="Url del modelo RVC", show_label=True)
                 
             with gr.Row():
-                tts_method = gr.Dropdown(choices=VOICE_METHODS, value="ElevenLabs", label="Método TTS:", visible=True)
+                tts_method = gr.Dropdown(choices=VOICE_METHODS, value="Edge-tts", label="Método TTS:", visible=True)
                 tts_model = gr.Dropdown(choices=ELEVENLABS_VOICES_NAMES, label="Modelo TTS:", visible=True, interactive=True)
                 tts_api_key = gr.Textbox(label="ElevenLabs Api key", show_label=True, placeholder="4a4afce72349680c8e8b6fdcfaf2b65a",interactive=True)
             

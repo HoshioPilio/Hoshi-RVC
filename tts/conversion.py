@@ -8,6 +8,7 @@ import edge_tts
 from inference import Inference
 import asyncio
 from elevenlabs import voices, generate, save
+from elevenlabs.api.error import UnauthenticatedRateLimitError
 
 ELEVENLABS_VOICES_RAW = voices()
 
@@ -102,14 +103,17 @@ def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key):
                 print("Error: Audio will be replaced.")
                 success = False
     if tts_method == 'ElevenLabs':
-        audio = generate(
-            text=tts_text,
-            voice=tts_model,
-            model="eleven_multilingual_v2",
-            api_key=tts_api_key
-        )
-        save(audio=audio, filename=converted_tts_filename)
-        success = True
+        try:
+            audio = generate(
+                text=tts_text,
+                voice=tts_model,
+                model="eleven_multilingual_v2",
+                api_key=tts_api_key
+            )
+            save(audio=audio, filename=converted_tts_filename)
+            success = True
+        except UnauthenticatedRateLimitError:
+            return "Necesitas configurar tu API Key para usar elevenlabs", None
         
     if not model_url:
         return 'Pon la url del modelo si quieres aplicarle otro tono.', converted_tts_filename
