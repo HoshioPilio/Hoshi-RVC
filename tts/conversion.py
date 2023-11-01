@@ -10,8 +10,16 @@ import asyncio
 from elevenlabs import voices, generate, save
 from elevenlabs.api.error import UnauthenticatedRateLimitError
 # Not working in windows
-from neon_tts_plugin_coqui import CoquiTTS
-import tempfile
+import platform
+
+COQUI_LANGUAGES = []
+if platform.system() != 'Windows':
+    from neon_tts_plugin_coqui import CoquiTTS
+    
+    # CoquiTTS
+    COQUI_LANGUAGES = list(CoquiTTS.langs.keys())
+    coquiTTS = CoquiTTS()
+
 
 # Elevenlabs
 ELEVENLABS_VOICES_RAW = voices()
@@ -23,10 +31,6 @@ def get_elevenlabs_voice_names():
     return elevenlabs_voice_names
 
 ELEVENLABS_VOICES_NAMES = get_elevenlabs_voice_names()
-
-# CoquiTTS
-COQUI_LANGUAGES = list(CoquiTTS.langs.keys())
-coquiTTS = CoquiTTS()
 
 def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key, language):
     if not tts_text:
@@ -68,6 +72,9 @@ def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key, language)
     #     api.TextToSpeech()
         
     if tts_method == "CoquiTTS":
+        if platform.system() == 'Windows':
+            return "Funcionalidad no disponible en windows", None
+            
         print(tts_text, language)
         # return output
         coquiTTS.get_tts(tts_text, converted_tts_filename, speaker = {"language" : language})

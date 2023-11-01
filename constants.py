@@ -1,3 +1,6 @@
+zips_folder = "./zips"
+unzips_folder = "./unzips"
+
 VOICE_METHODS = ["Edge-tts", "CoquiTTS", "ElevenLabs",]
 
 BARK_VOICES = [

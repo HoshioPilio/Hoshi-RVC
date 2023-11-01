@@ -4,6 +4,7 @@ __pycache__
 /audios/
 /audio-outputs/
 /LOGS
+/yt_videos
 /RUNTIME
 *.pyd
 hubert_base.pt
