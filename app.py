@@ -159,7 +159,7 @@ def update_tts_methods_voice(select_value):
     elif select_value == 'ElevenLabs':
         return gr.update(choices=ELEVENLABS_VOICES_NAMES), gr.Markdown.update(visible=True), gr.Textbox.update(visible=True), gr.Radio.update(visible=False)
     elif select_value == 'CoquiTTS':
-        return gr.Dropdown(visible=False), gr.Markdown.update(visible=True), gr.Textbox.update(visible=False), gr.Radio.update(visible=True)
+        return gr.Dropdown(visible=False), gr.Markdown.update(visible=False), gr.Textbox.update(visible=False), gr.Radio.update(visible=True)
 
 with gr.Blocks() as app:
     gr.HTML("<h1> Simple RVC Inference - by Juuxn 💻 </h1>")

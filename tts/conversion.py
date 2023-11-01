@@ -69,10 +69,8 @@ def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key, language)
     if tts_method == "CoquiTTS":
         print(tts_text, language)
         # return output
-        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as fp:
-            coquiTTS.get_tts(tts_text, fp, speaker = {"language" : language})
-            converted_tts_filename = fp.name
-            success = True
+        coquiTTS.get_tts(tts_text, converted_tts_filename, speaker = {"language" : language})
+        success = True
         
     if tts_method == 'ElevenLabs':
         try:
