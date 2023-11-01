@@ -73,6 +73,8 @@ def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key, language)
         success = True
         
     if tts_method == 'ElevenLabs':
+        if len(tts_text) > 2500:
+            return "El límite de cuentas no logeadas es de 2500 caracteres.", None
         try:
             audio = generate(
                 text=tts_text,
