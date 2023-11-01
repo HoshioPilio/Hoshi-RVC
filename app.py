@@ -192,7 +192,7 @@ with gr.Blocks() as app:
                 
             with gr.Row():
                 tts_method = gr.Dropdown(choices=VOICE_METHODS, value="Edge-tts", label="Método TTS:", visible=True)
-                tts_model = gr.Dropdown(choices=ELEVENLABS_VOICES_NAMES, label="Modelo TTS:", visible=True, interactive=True)
+                tts_model = gr.Dropdown(choices=EDGE_VOICES, label="Modelo TTS:", visible=True, interactive=True)
                 tts_api_key = gr.Textbox(label="ElevenLabs Api key", show_label=True, placeholder="4a4afce72349680c8e8b6fdcfaf2b65a",interactive=True, visible=False)
             
             tts_coqui_languages = gr.Radio(
