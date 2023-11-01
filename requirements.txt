@@ -173,8 +173,8 @@ validators
 #tortoise-tts
 #git+https://github.com/neonbjb/tortoise-tts.git
 neon-tts-plugin-coqui
-deepfilternet
-librosa
-matplotlib
-maturin
+#deepfilternet
+#librosa
+#matplotlib
+#maturin
 #git+https://github.com/microsoft/DeepSpeed.git@v0.8.0
