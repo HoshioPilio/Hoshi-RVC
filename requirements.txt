@@ -178,3 +178,4 @@ neon-tts-plugin-coqui
 #matplotlib
 #maturin
 #git+https://github.com/microsoft/DeepSpeed.git@v0.8.0
+pytube
