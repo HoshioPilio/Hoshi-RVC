@@ -1,4 +1,4 @@
-VOICE_METHODS = ["Edge-tts", "ElevenLabs",]
+VOICE_METHODS = ["Edge-tts", "CoquiTTS", "ElevenLabs",]
 
 BARK_VOICES = [
     "v2/en_speaker_0-Male",

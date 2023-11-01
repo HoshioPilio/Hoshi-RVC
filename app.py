@@ -6,8 +6,9 @@ import hashlib
 from utils.model import model_downloader, get_model
 import requests
 import json
+import torch
 from tts.constants import VOICE_METHODS, BARK_VOICES, EDGE_VOICES
-from tts.conversion import tts_infer, ELEVENLABS_VOICES_RAW, ELEVENLABS_VOICES_NAMES
+from tts.conversion import tts_infer, ELEVENLABS_VOICES_RAW, ELEVENLABS_VOICES_NAMES, COQUI_LANGUAGES
 
 api_url = "https://rvc-models-api.onrender.com/uploadfile/"
 
@@ -18,6 +19,17 @@ if not os.path.exists(zips_folder):
 if not os.path.exists(unzips_folder):
   os.mkdir(unzips_folder)
            
+def get_info(path):
+    path = os.path.join(unzips_folder, path)
+    try:
+        a = torch.load(path, map_location="cpu")
+        return a
+    except Exception as e:
+        print("*****************eeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrr*****")
+        print(e)
+        return {
+
+        }
 def calculate_md5(file_path):
     hash_md5 = hashlib.md5()
     with open(file_path, "rb") as f:
@@ -82,16 +94,26 @@ def post_model(name, model_url, version, creator):
     
     md5_hash = calculate_md5(os.path.join(unzips_folder,model_files['pth']))
     zipfile = compress(modelname, list(model_files.values()))
+    
+    a = get_info(model_files.get('pth'))
     file_to_upload = open(zipfile, "rb")
+    info = a.get("info", "None"),
+    sr = a.get("sr", "None"),
+    f0 = a.get("f0", "None"),
+    
     data = {
         "name": name,
         "version": version,
         "creator": creator,
-        "hash": md5_hash
+        "hash": md5_hash,
+        "info": info,
+        "sr": sr,
+        "f0": f0
     }
     print("Subiendo archivo...")
     # Realizar la solicitud POST
     response = requests.post(api_url, files={"file": file_to_upload}, data=data)
+    result = response.json()
     
     # Comprobar la respuesta
     if response.status_code == 200:
@@ -100,6 +122,7 @@ def post_model(name, model_url, version, creator):
     else:
         print("Error al cargar el archivo:", response.status_code)
         return result
+        
 
 def search_model(name):
     web_service_url = "https://script.google.com/macros/s/AKfycbyRaNxtcuN8CxUrcA_nHW6Sq9G2QJor8Z2-BJUGnQ2F_CB8klF4kQL--U2r2MhLFZ5J/exec"
@@ -130,11 +153,13 @@ def search_model(name):
             
 def update_tts_methods_voice(select_value):
     if select_value == "Edge-tts":
-        return gr.update(choices=EDGE_VOICES), gr.Markdown.update(visible=False), gr.Textbox.update(visible=False)
+        return gr.update(choices=EDGE_VOICES), gr.Markdown.update(visible=False), gr.Textbox.update(visible=False),gr.Radio.update(visible=False)
     elif select_value == "Bark-tts":
-        return gr.update(choices=BARK_VOICES), gr.Markdown.update(visible=False), gr.Textbox.update(visible=False)
+        return gr.update(choices=BARK_VOICES), gr.Markdown.update(visible=False), gr.Textbox.update(visible=False),gr.Radio.update(visible=False)
     elif select_value == 'ElevenLabs':
-        return gr.update(choices=ELEVENLABS_VOICES_NAMES), gr.Markdown.update(visible=True), gr.Textbox.update(visible=True)
+        return gr.update(choices=ELEVENLABS_VOICES_NAMES), gr.Markdown.update(visible=True), gr.Textbox.update(visible=True), gr.Radio.update(visible=False)
+    elif select_value == 'CoquiTTS':
+        return gr.Dropdown(visible=False), gr.Markdown.update(visible=True), gr.Textbox.update(visible=True), gr.Radio.update(visible=False)
 
 with gr.Blocks() as app:
     gr.HTML("<h1> Simple RVC Inference - by Juuxn 💻 </h1>")
@@ -168,7 +193,14 @@ with gr.Blocks() as app:
             with gr.Row():
                 tts_method = gr.Dropdown(choices=VOICE_METHODS, value="Edge-tts", label="Método TTS:", visible=True)
                 tts_model = gr.Dropdown(choices=ELEVENLABS_VOICES_NAMES, label="Modelo TTS:", visible=True, interactive=True)
-                tts_api_key = gr.Textbox(label="ElevenLabs Api key", show_label=True, placeholder="4a4afce72349680c8e8b6fdcfaf2b65a",interactive=True)
+                tts_api_key = gr.Textbox(label="ElevenLabs Api key", show_label=True, placeholder="4a4afce72349680c8e8b6fdcfaf2b65a",interactive=True, visible=False)
+            
+            tts_coqui_languages = gr.Radio(
+                label="Language",
+                choices=COQUI_LANGUAGES,
+                value="en",
+                visible=False
+            )
             
             tts_btn = gr.Button(value="Convertir")
                 
@@ -176,13 +208,13 @@ with gr.Blocks() as app:
                 tts_vc_output1 = gr.Textbox(label="Salida")
                 tts_vc_output2 = gr.Audio(label="Audio de salida")   
             
-        tts_btn.click(fn=tts_infer, inputs=[tts_text, tts_model_url, tts_method, tts_model, tts_api_key], outputs=[tts_vc_output1, tts_vc_output2])
+        tts_btn.click(fn=tts_infer, inputs=[tts_text, tts_model_url, tts_method, tts_model, tts_api_key, tts_coqui_languages], outputs=[tts_vc_output1, tts_vc_output2])
         
         tts_msg = gr.Markdown("""**Recomiendo que te crees una cuenta de eleven labs y pongas tu clave de api, es gratis y tienes 10k caracteres de limite al mes.** <br/>
                 ![Imgur](https://imgur.com/HH6YTu0.png)
-                """, visible=True)
+                """, visible=False)
         
-        tts_method.change(fn=update_tts_methods_voice, inputs=[tts_method], outputs=[tts_model, tts_msg, tts_api_key])
+        tts_method.change(fn=update_tts_methods_voice, inputs=[tts_method], outputs=[tts_model, tts_msg, tts_api_key, tts_coqui_languages])
         
     with gr.Tab("Modelos"):
         gr.HTML("<h4>Buscar modelos</h4>")

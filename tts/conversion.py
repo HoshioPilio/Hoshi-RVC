@@ -9,7 +9,10 @@ from inference import Inference
 import asyncio
 from elevenlabs import voices, generate, save
 from elevenlabs.api.error import UnauthenticatedRateLimitError
+from neon_tts_plugin_coqui import CoquiTTS
+import tempfile
 
+# Elevenlabs
 ELEVENLABS_VOICES_RAW = voices()
 
 def get_elevenlabs_voice_names():
@@ -20,50 +23,11 @@ def get_elevenlabs_voice_names():
 
 ELEVENLABS_VOICES_NAMES = get_elevenlabs_voice_names()
 
-#git+https://github.com/suno-ai/bark.git
-# from transformers import AutoProcessor, BarkModel
-# import nltk
-# from nltk.tokenize import sent_tokenize
-# from bark import SAMPLE_RATE
+# CoquiTTS
+COQUI_LANGUAGES = list(CoquiTTS.langs.keys())
+coquiTTS = CoquiTTS()
 
-# now_dir = os.getcwd()
-
-def cast_to_device(tensor, device):
-    try:
-        return tensor.to(device)
-    except Exception as e:
-        print(e)
-        return tensor
-
-# Buscar la forma de evitar descargar el archivo de 4gb cada vez que crea una instancia
-# def _bark_conversion_(text, voice_preset):
-#     os.makedirs(os.path.join(now_dir, "tts"), exist_ok=True)
-
-#     device = "cuda:0" if torch.cuda.is_available() else "cpu"
-#     dtype = torch.float32 if "cpu" in device else torch.float16
-#     bark_processor = AutoProcessor.from_pretrained(
-#         "suno/bark",
-#         cache_dir=os.path.join(now_dir, "tts", "suno/bark"),
-#         torch_dtype=dtype,
-#     )
-#     bark_model = BarkModel.from_pretrained(
-#         "suno/bark",
-#         cache_dir=os.path.join(now_dir, "tts", "suno/bark"),
-#         torch_dtype=dtype,
-#     ).to(device)
-#     # bark_model.enable_cpu_offload()
-#     inputs = bark_processor(text=[text], return_tensors="pt", voice_preset=voice_preset)
-#     tensor_dict = {
-#         k: cast_to_device(v, device) if hasattr(v, "to") else v
-#         for k, v in inputs.items()
-#     }
-#     speech_values = bark_model.generate(**tensor_dict, do_sample=True)
-#     sampling_rate = bark_model.generation_config.sample_rate
-#     speech = speech_values.cpu().numpy().squeeze()
-#     return speech, sampling_rate
-
-
-def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key):
+def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key, language):
     if not tts_text:
         return 'Primero escribe el texto que quieres convertir.', None
     if not tts_model:
@@ -79,8 +43,8 @@ def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key):
         tts_text = tts_text[:60]
         print("DEMO; limit to 60 characters")
 
-    language = tts_model[:2]
     if tts_method == "Edge-tts":
+        language = tts_model[:2]
         try:
             asyncio.run(
                 edge_tts.Communicate(
@@ -102,6 +66,17 @@ def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key):
                 tts.save(converted_tts_filename)
                 print("Error: Audio will be replaced.")
                 success = False
+                
+    # if tts_method == "Tortoise":
+    #     api.TextToSpeech()
+        
+    if tts_method == "CoquiTTS":
+        print(tts_text, language)
+        # return output
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as fp:
+            coquiTTS.get_tts(tts_text, fp, speaker = {"language" : language})
+            return fp.name
+        
     if tts_method == 'ElevenLabs':
         try:
             audio = generate(
@@ -117,25 +92,7 @@ def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key):
         
     if not model_url:
         return 'Pon la url del modelo si quieres aplicarle otro tono.', converted_tts_filename
-    
-    # elif tts_method == "Bark-tts":
-    #     try:
-    #         script = tts_text.replace("\n", " ").strip()
-    #         sentences = sent_tokenize(script)
-    #         silence = np.zeros(int(0.25 * SAMPLE_RATE))
-    #         pieces = []
-    #         for sentence in sentences:
-    #             audio_array, _ = _bark_conversion_(sentence, tts_model.split("-")[0])
-    #             pieces += [audio_array, silence.copy()]
 
-    #         sf.write(
-    #             file=converted_tts_filename, samplerate=SAMPLE_RATE, data=np.concatenate(pieces)
-    #         )
-            
-    #     except Exception as e:
-    #         print(f"{e}")
-    #         return None, None
-    
     if success:
         inference = Inference(
             model_name=model_url,
