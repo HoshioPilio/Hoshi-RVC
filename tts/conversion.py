@@ -30,7 +30,7 @@ coquiTTS = CoquiTTS()
 def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key, language):
     if not tts_text:
         return 'Primero escribe el texto que quieres convertir.', None
-    if not tts_model:
+    if not tts_model and tts_method != 'CoquiTTS':
         return 'Selecciona un modelo TTS antes de convertir.', None
         
     f0_method = "harvest" 
