@@ -7,7 +7,7 @@ from utils.model import model_downloader, get_model
 import requests
 import json
 from tts.constants import VOICE_METHODS, BARK_VOICES, EDGE_VOICES
-from tts.conversion import tts_infer
+from tts.conversion import tts_infer, ELEVENLABS_VOICES_RAW, ELEVENLABS_VOICES_NAMES
 
 api_url = "https://rvc-models-api.onrender.com/uploadfile/"
 
@@ -130,9 +130,11 @@ def search_model(name):
             
 def update_tts_methods_voice(select_value):
     if select_value == "Edge-tts":
-        return gr.update(choices=EDGE_VOICES)
+        return gr.update(choices=EDGE_VOICES), gr.Markdown.update(visible=False), gr.Textbox.update(visible=False)
     elif select_value == "Bark-tts":
-        return gr.update(choices=BARK_VOICES)
+        return gr.update(choices=BARK_VOICES), gr.Markdown.update(visible=False), gr.Textbox.update(visible=False)
+    elif select_value == 'ElevenLabs':
+        return gr.update(choices=ELEVENLABS_VOICES_NAMES), gr.Markdown.update(visible=True), gr.Textbox.update(visible=True)
 
 with gr.Blocks() as app:
     gr.HTML("<h1> Simple RVC Inference - by Juuxn 💻 </h1>")
@@ -163,19 +165,26 @@ with gr.Blocks() as app:
             with gr.Row():
                 tts_model_url = gr.Textbox(placeholder="https://huggingface.co/AIVER-SE/BillieEilish/resolve/main/BillieEilish.zip", label="Url del modelo RVC", show_label=True)
                 
-            with gr.Column():
-                tts_method = gr.Dropdown(choices=VOICE_METHODS, value="Edge-tts", label="Método TTS:", visible=False)
-                tts_model = gr.Dropdown(choices=EDGE_VOICES, label="Modelo TTS:", visible=True, interactive=True)
-                tts_method.change(fn=update_tts_methods_voice, inputs=[tts_method], outputs=[tts_model])
-                    
+            with gr.Row():
+                tts_method = gr.Dropdown(choices=VOICE_METHODS, value="ElevenLabs", label="Método TTS:", visible=True)
+                tts_model = gr.Dropdown(choices=ELEVENLABS_VOICES_NAMES, label="Modelo TTS:", visible=True, interactive=True)
+                tts_api_key = gr.Textbox(label="ElevenLabs Api key", show_label=True, placeholder="4a4afce72349680c8e8b6fdcfaf2b65a",interactive=True)
+            
+            tts_btn = gr.Button(value="Convertir")
+                
             with gr.Row():
                 tts_vc_output1 = gr.Textbox(label="Salida")
                 tts_vc_output2 = gr.Audio(label="Audio de salida")   
             
-        tts_btn = gr.Button(value="Convertir")
-        tts_btn.click(fn=tts_infer, inputs=[tts_text, tts_model_url, tts_method, tts_model], outputs=[tts_vc_output1, tts_vc_output2])
+        tts_btn.click(fn=tts_infer, inputs=[tts_text, tts_model_url, tts_method, tts_model, tts_api_key], outputs=[tts_vc_output1, tts_vc_output2])
         
-    with gr.Tab("Recursos"):
+        tts_msg = gr.Markdown("""**Recomiendo que te crees una cuenta de eleven labs y pongas tu clave de api, es gratis y tienes 10k caracteres de limite al mes.** <br/>
+                ![Imgur](https://imgur.com/HH6YTu0.png)
+                """, visible=True)
+        
+        tts_method.change(fn=update_tts_methods_voice, inputs=[tts_method], outputs=[tts_model, tts_msg, tts_api_key])
+        
+    with gr.Tab("Modelos"):
         gr.HTML("<h4>Buscar modelos</h4>")
         search_name = gr.Textbox(placeholder="Billie Eillish (RVC v2 - 100 epoch)", label="Nombre", show_label=True)
          # Salida
@@ -198,7 +207,6 @@ with gr.Blocks() as app:
         btn_post_model = gr.Button(value="Publicar")
         btn_post_model.click(fn=post_model, inputs=[post_name, post_model_url, post_version, post_creator], outputs=[post_output])
                 
-
         #     with gr.Column():
         #         model_voice_path07 = gr.Dropdown(
         #             label=i18n("RVC Model:"),

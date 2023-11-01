@@ -7,6 +7,18 @@ from gtts import gTTS
 import edge_tts
 from inference import Inference
 import asyncio
+from elevenlabs import voices, generate, save
+
+ELEVENLABS_VOICES_RAW = voices()
+
+def get_elevenlabs_voice_names():
+    elevenlabs_voice_names = []
+    for voice in ELEVENLABS_VOICES_RAW:
+        elevenlabs_voice_names.append(voice.name)
+    return elevenlabs_voice_names
+
+ELEVENLABS_VOICES_NAMES = get_elevenlabs_voice_names()
+
 #git+https://github.com/suno-ai/bark.git
 # from transformers import AutoProcessor, BarkModel
 # import nltk
@@ -50,16 +62,11 @@ def cast_to_device(tensor, device):
 #     return speech, sampling_rate
 
 
-def tts_infer(tts_text, model_url, tts_method, tts_model):
-    print("*****************")
-    print(tts_text)
-    print(model_url)
+def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key):
     if not tts_text:
         return 'Primero escribe el texto que quieres convertir.', None
     if not tts_model:
         return 'Selecciona un modelo TTS antes de convertir.', None
-    if not model_url:
-        return 'Escribe la url de modelo que quieres usar antes de convertir.', None
         
     f0_method = "harvest" 
     output_folder = "audios"
@@ -94,7 +101,19 @@ def tts_infer(tts_text, model_url, tts_method, tts_model):
                 tts.save(converted_tts_filename)
                 print("Error: Audio will be replaced.")
                 success = False
-                
+    if tts_method == 'ElevenLabs':
+        audio = generate(
+            text=tts_text,
+            voice=tts_model,
+            model="eleven_multilingual_v2",
+            api_key=tts_api_key
+        )
+        save(audio=audio, filename=converted_tts_filename)
+        success = True
+        
+    if not model_url:
+        return 'Pon la url del modelo si quieres aplicarle otro tono.', converted_tts_filename
+    
     # elif tts_method == "Bark-tts":
     #     try:
     #         script = tts_text.replace("\n", " ").strip()
