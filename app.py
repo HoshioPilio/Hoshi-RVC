@@ -155,11 +155,11 @@ def update_tts_methods_voice(select_value):
     if select_value == "Edge-tts":
         return gr.Dropdown.update(choices=EDGE_VOICES, visible=True), gr.Markdown.update(visible=False), gr.Textbox.update(visible=False),gr.Radio.update(visible=False)
     elif select_value == "Bark-tts":
-        return gr.update(choices=BARK_VOICES), gr.Markdown.update(visible=False), gr.Textbox.update(visible=False),gr.Radio.update(visible=False)
+        return gr.Dropdown.update(choices=BARK_VOICES, visible=True), gr.Markdown.update(visible=False), gr.Textbox.update(visible=False),gr.Radio.update(visible=False)
     elif select_value == 'ElevenLabs':
-        return gr.update(choices=ELEVENLABS_VOICES_NAMES), gr.Markdown.update(visible=True), gr.Textbox.update(visible=True), gr.Radio.update(visible=False)
+        return gr.Dropdown.update(choices=ELEVENLABS_VOICES_NAMES, visible=True), gr.Markdown.update(visible=True), gr.Textbox.update(visible=True), gr.Radio.update(visible=False)
     elif select_value == 'CoquiTTS':
-        return gr.Dropdown(visible=False), gr.Markdown.update(visible=False), gr.Textbox.update(visible=False), gr.Radio.update(visible=True)
+        return gr.Dropdown.update(visible=False), gr.Markdown.update(visible=False), gr.Textbox.update(visible=False), gr.Radio.update(visible=True)
 
 with gr.Blocks() as app:
     gr.HTML("<h1> Simple RVC Inference - by Juuxn 💻 </h1>")
