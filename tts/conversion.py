@@ -39,10 +39,6 @@ def tts_infer(tts_text, model_url, tts_method, tts_model, tts_api_key, language)
     converted_tts_filename = os.path.join(output_folder, f"tts_out_{uuid.uuid4()}.wav")
     success = False
 
-    if len(tts_text) > 60:
-        tts_text = tts_text[:60]
-        print("DEMO; limit to 60 characters")
-
     if tts_method == "Edge-tts":
         language = tts_model[:2]
         try:
