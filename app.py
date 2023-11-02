@@ -46,19 +46,46 @@ def convert_yt_to_wav(url):
 with gr.Blocks() as app:
     gr.HTML("<h1> Simple RVC Inference - by Juuxn 💻 </h1>")
     
+    gr.HTML("<h4> El espacio actual usa solo cpu, así que es solo para inferencia. Se recomienda duplicar el espacio para no tener problemas con las colas de procesamiento. </h4>")
+    gr.Markdown(
+        "[![Duplicate this Space](https://huggingface.co/datasets/huggingface/badges/raw/main/duplicate-this-space-sm-dark.svg)](https://huggingface.co/spaces/juuxn/SimpleRVC?duplicate=true)\n\n"
+    ) 
+    
+    gr.Markdown("Recopilación de modelos que puedes usar: RVC + Kits ai. **[RVC Community Models](https://docs.google.com/spreadsheets/d/1owfUtQuLW9ReiIwg6U9UkkDmPOTkuNHf0OKQtWu1iaI)**")
+    
     with gr.Tab("Inferencia"):
         model_url = gr.Textbox(placeholder="https://huggingface.co/AIVER-SE/BillieEilish/resolve/main/BillieEilish.zip", label="Url del modelo", show_label=True)
-        audio_path = gr.Audio(label="Archivo de audio", show_label=True, type="filepath", )
-        f0_method = gr.Dropdown(choices=["harvest", "pm", "crepe", "crepe-tiny", "mangio-crepe", "mangio-crepe-tiny", "rmvpe"], 
-                                value="rmvpe", 
-                                label="Algoritmo", show_label=True)
+        with gr.Row():
+            with gr.Column():
+                audio_path = gr.Audio(label="Archivo de audio", show_label=True, type="filepath",)
+                index_rate = gr.Slider(minimum=0, maximum=1, label="Search feature ratio:", value=0.75, interactive=True,)
+                filter_radius1 = gr.Slider(minimum=0, maximum=7, label="Filtro (reducción de asperezas respiración)", value=3, step=1, interactive=True,)
+            with gr.Column():
+                f0_method = gr.Dropdown(choices=["harvest", "pm", "crepe", "crepe-tiny", "mangio-crepe", "mangio-crepe-tiny", "rmvpe"], 
+                                    value="rmvpe", 
+                                    label="Algoritmo", show_label=True)
+                vc_transform0 = gr.Slider(minimum=-12, label="Número de semitonos, subir una octava: 12, bajar una octava: -12", value=0, maximum=12, step=1)
+                protect0 = gr.Slider(
+                    minimum=0, maximum=0.5, label="Protejer las consonantes sordas y los sonidos respiratorios. 0.5 para desactivarlo.", value=0.33,
+                    step=0.01,
+                interactive=True,
+                )
+                resample_sr1 = gr.Slider(
+                    minimum=0,
+                    maximum=48000,
+                    label="Re-muestreo sobre el audio de salida hasta la frecuencia de muestreo final. 0 para no re-muestrear.",
+                    value=0,
+                    step=1,
+                    interactive=True,
+                )
+                 
         # Salida
         with gr.Row():
             vc_output1 = gr.Textbox(label="Salida")
             vc_output2 = gr.Audio(label="Audio de salida")
                             
         btn = gr.Button(value="Convertir")
-        btn.click(infer, inputs=[model_url, f0_method, audio_path], outputs=[vc_output1, vc_output2])
+        btn.click(infer, inputs=[model_url, f0_method, audio_path, index_rate, vc_transform0, protect0, resample_sr1, filter_radius1], outputs=[vc_output1, vc_output2])
         
     with gr.TabItem("TTS"):
         with gr.Row():

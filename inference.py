@@ -18,7 +18,7 @@ class Inference:
         feature_index_path="",
         f0_file=None,
         speaker_id=0,
-        transposition=-2,
+        transposition=0,
         f0_method="harvest",
         crepe_hop_length=160,
         harvest_median_filter=3,

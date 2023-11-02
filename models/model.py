@@ -65,19 +65,24 @@ def compress(modelname, files):
 
     return file_path
 
-def infer(model, f0_method, audio_file):
+def infer(model, f0_method, audio_file, index_rate, vc_transform0, protect0, resample_sr1, filter_radius1):
     print("****", audio_file)
     inference = Inference(
         model_name=model,
         f0_method=f0_method,
         source_audio_path=audio_file,
+        feature_ratio=index_rate,
+        transposition=vc_transform0,
+        protection_amnt=protect0,
+        resample=resample_sr1,
+        harvest_median_filter=filter_radius1,
         output_file_name=os.path.join("./audio-outputs", os.path.basename(audio_file))
     )
     output = inference.run()
     if 'success' in output and output['success']:
         return output, output['file']
     else:
-        return
+        return "Failed", None
     
 
 def post_model(name, model_url, version, creator):
