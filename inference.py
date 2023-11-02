@@ -195,7 +195,8 @@ class Inference:
 
     def run(self):
         current_dir = os.getcwd()
-        modelname = model.model_downloader(self._model_name, "./zips/", "./weights/")
+        modelname = model.model_downloader(
+            self._model_name, "./zips/", "./weights/")
         
         model_info = model.get_model(os.path.join(current_dir, 'weights') , modelname)
         if not model_info:
