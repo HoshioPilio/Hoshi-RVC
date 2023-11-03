@@ -47,6 +47,8 @@ with gr.Blocks() as app:
     gr.HTML("<h1> Simple RVC Inference - by Juuxn 💻 </h1>")
     
     gr.HTML("<h4> El espacio actual usa solo cpu, así que es solo para inferencia. Se recomienda duplicar el espacio para no tener problemas con las colas de procesamiento. </h4>")
+    
+    gr.Markdown("[![Open In Colab](https://img.shields.io/badge/Colab-F9AB00?style=for-the-badge&logo=googlecolab&color=525252)](Juuxn RVC-Web-UI](https://colab.research.google.com/drive/1NKqqTR04HujeBxzwe7jbYEvNi8LbxD_N?usp=sharing)")
     gr.Markdown(
         "[![Duplicate this Space](https://huggingface.co/datasets/huggingface/badges/raw/main/duplicate-this-space-sm-dark.svg)](https://huggingface.co/spaces/juuxn/SimpleRVC?duplicate=true)\n\n"
     ) 
