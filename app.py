@@ -224,5 +224,5 @@ with gr.Blocks() as app:
 
     
     
-    app.queue(concurrency_count=511, max_size=1022).launch()
+    app.queue(concurrency_count=200, max_size=1022).launch()
     #share=True
