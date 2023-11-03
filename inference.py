@@ -198,6 +198,9 @@ class Inference:
         modelname = model.model_downloader(
             self._model_name, "./zips/", "./weights/")
         
+        if not modelname:
+            return "No se ha podido descargar el modelo, intenta con otro enlace o intentalo más tarde."
+        
         model_info = model.get_model(os.path.join(current_dir, 'weights') , modelname)
         if not model_info:
             return "No se encontrado un modelo valido, verifica el contenido del enlace e intentalo más tarde."

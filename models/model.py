@@ -73,7 +73,6 @@ def infer(model, f0_method, audio_file, index_rate, vc_transform0, protect0, res
     if not audio_file:
         return "No audio file specified, please load an audio file.", None
     
-    
     inference = Inference(
         model_name=model,
         f0_method=f0_method,
@@ -85,13 +84,14 @@ def infer(model, f0_method, audio_file, index_rate, vc_transform0, protect0, res
         harvest_median_filter=filter_radius1,
         output_file_name=os.path.join("./audio-outputs", os.path.basename(audio_file))
     )
+    
     output = inference.run()
     if 'success' in output and output['success']:
         print("Inferencia realizada exitosamente...")
         return output, output['file']
     else:
         print("Fallo en la inferencia...", output)
-        return "Failed", None
+        return output, None
     
 def post_model(name, model_url, version, creator):
     modelname = model_downloader(model_url, zips_folder, unzips_folder)
