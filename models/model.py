@@ -95,6 +95,10 @@ def infer(model, f0_method, audio_file, index_rate, vc_transform0, protect0, res
     
 def post_model(name, model_url, version, creator):
     modelname = model_downloader(model_url, zips_folder, unzips_folder)
+    
+    if not modelname:
+        return "No se ha podido descargar el modelo, intenta con otro enlace o intentalo más tarde."
+    
     model_files = get_model(unzips_folder, modelname)
     
     if not model_files:
