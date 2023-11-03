@@ -66,7 +66,14 @@ def compress(modelname, files):
     return file_path
 
 def infer(model, f0_method, audio_file, index_rate, vc_transform0, protect0, resample_sr1, filter_radius1):
-    print("****", audio_file)
+    
+    if not model:
+        return "No model url specified, please specify a model url.", None
+    
+    if not audio_file:
+        return "No audio file specified, please load an audio file.", None
+    
+    
     inference = Inference(
         model_name=model,
         f0_method=f0_method,
@@ -80,11 +87,12 @@ def infer(model, f0_method, audio_file, index_rate, vc_transform0, protect0, res
     )
     output = inference.run()
     if 'success' in output and output['success']:
+        print("Inferencia realizada exitosamente...")
         return output, output['file']
     else:
+        print("Fallo en la inferencia...", output)
         return "Failed", None
     
-
 def post_model(name, model_url, version, creator):
     modelname = model_downloader(model_url, zips_folder, unzips_folder)
     model_files = get_model(unzips_folder, modelname)
