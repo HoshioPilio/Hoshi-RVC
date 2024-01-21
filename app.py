@@ -1,4 +1,4 @@
- import gradio as gr
+import gradio as gr
 import os
 from constants import VOICE_METHODS, BARK_VOICES, EDGE_VOICES
 import platform
