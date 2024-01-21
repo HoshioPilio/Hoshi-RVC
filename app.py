@@ -133,12 +133,12 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Hoshi-RVC-Web") as app:
             
         yt_btn.click(fn=convert_yt_to_wav, inputs=[yt_url], outputs=[yt_output1, yt_output2])
          
-     with gr.TabItem("Audio enhancement"):
-         enhance_input_audio = gr.Audio(label="Input audio")
-         enhance_output_audio = gr.Audio(label="Output Audio")
+  #   with gr.TabItem("Audio enhancement"):
+  #       enhance_input_audio = gr.Audio(label="Input audio")
+  #       enhance_output_audio = gr.Audio(label="Output Audio")
 
-         btn_enhance_audio = gr.Button()
-          btn_enhance_audio.click(fn=audio_enhance, inputs=[enhance_input_audio], outputs=[enhance_output_audio])
+  #       btn_enhance_audio = gr.Button()
+  #        btn_enhance_audio.click(fn=audio_enhance, inputs=[enhance_input_audio], outputs=[enhance_output_audio])
         
         
     with gr.Tab("Models"):
@@ -217,3 +217,5 @@ with gr.Blocks(theme=gr.themes.Soft(), title="Hoshi-RVC-Web") as app:
     
     app.queue(concurrency_count=200, max_size=1022).launch(share=True)
     #share=True
+
+#i have 0 idea
