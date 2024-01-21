@@ -16,8 +16,13 @@ cd Hoshi-RVC
 pip install -r requirements.txt
 ```
 
+```
+wget https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/hubert_base.pt
+```
 
-
+```
+wget https://huggingface.co/lj1995/VoiceConversionWebUI/resolve/main/rmvpe.pt
+```
 
 
 
