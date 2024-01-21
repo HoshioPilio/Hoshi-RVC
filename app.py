@@ -12,10 +12,10 @@ from pydub import AudioSegment
 
 def convert_yt_to_wav(url):
     if not url:
-        return "Primero introduce el enlace del video", None
+        return "First enter the video link", None
     
     try:
-        print(f"Convirtiendo video {url}...")
+        print(f"Converting {url} video...")
         # Descargar el video utilizando pytube
         video = pytube.YouTube(url)
         stream = video.streams.filter(only_audio=True).first()
@@ -39,33 +39,25 @@ def convert_yt_to_wav(url):
             
         return "Success", audio_file_path
     except ConnectionResetError as cre:
-        return "Se ha perdido la conexión, recarga o reintentalo nuevamente más tarde.", None
+        return "Connection has been lost, recharge or try again later.", None
     except Exception as e:
         return str(e), None
     
 with gr.Blocks() as app:
     gr.HTML("<h1> Simple RVC Inference - by Juuxn 💻 </h1>")
     
-    gr.HTML("<h4> El espacio actual usa solo cpu, así que es solo para inferencia. Se recomienda duplicar el espacio para no tener problemas con las colas de procesamiento. </h4>")
-    
-    gr.Markdown("Simple RVC GPU Inference on colab: [![Open In Colab](https://img.shields.io/badge/Colab-F9AB00?style=for-the-badge&logo=googlecolab&color=525252)](https://colab.research.google.com/drive/1NKqqTR04HujeBxzwe7jbYEvNi8LbxD_N?usp=sharing)")
-    gr.Markdown(
-        "[![Duplicate this Space](https://huggingface.co/datasets/huggingface/badges/raw/main/duplicate-this-space-sm-dark.svg)](https://huggingface.co/spaces/juuxn/SimpleRVC?duplicate=true)\n\n"
-    ) 
-    
-    gr.Markdown("Recopilación de modelos que puedes usar: RVC + Kits ai. **[RVC Community Models](https://docs.google.com/spreadsheets/d/1owfUtQuLW9ReiIwg6U9UkkDmPOTkuNHf0OKQtWu1iaI)**")
-    
-    with gr.Tab("Inferencia"):
-        model_url = gr.Textbox(placeholder="https://huggingface.co/AIVER-SE/BillieEilish/resolve/main/BillieEilish.zip", label="Url del modelo", show_label=True)
+
+    with gr.Tab("Inference"):
+        model_url = gr.Textbox(placeholder="https://huggingface.co/AIVER-SE/BillieEilish/resolve/main/BillieEilish.zip", label="Url voice models", show_label=True)
         with gr.Row():
             with gr.Column():
-                audio_path = gr.Audio(label="Archivo de audio", show_label=True, type="filepath",)
+                audio_path = gr.Audio(label="Audio file", show_label=True, type="filepath",)
                 index_rate = gr.Slider(minimum=0, maximum=1, label="Search feature ratio:", value=0.75, interactive=True,)
-                filter_radius1 = gr.Slider(minimum=0, maximum=7, label="Filtro (reducción de asperezas respiración)", value=3, step=1, interactive=True,)
+                filter_radius1 = gr.Slider(minimum=0, maximum=7, label="Filter (reduction of breathing harshness)", value=3, step=1, interactive=True,)
             with gr.Column():
                 f0_method = gr.Dropdown(choices=["harvest", "pm", "crepe", "crepe-tiny", "mangio-crepe", "mangio-crepe-tiny", "rmvpe"], 
                                     value="rmvpe", 
-                                    label="Algoritmo", show_label=True)
+                                    label="pitch_algorit", show_label=True)
                 vc_transform0 = gr.Slider(minimum=-12, label="Número de semitonos, subir una octava: 12, bajar una octava: -12", value=0, maximum=12, step=1)
                 protect0 = gr.Slider(
                     minimum=0, maximum=0.5, label="Protejer las consonantes sordas y los sonidos respiratorios. 0.5 para desactivarlo.", value=0.33,
