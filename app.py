@@ -44,7 +44,7 @@ def convert_yt_to_wav(url):
         return str(e), None
     
 with gr.Blocks() as app:
-    gr.HTML("<h1> Simple RVC Inference - by Juuxn 💻 </h1>")
+    gr.HTML("<h1>  Hoshi-RVC - by Laynz28 💻 </h1>")
     
 
     with gr.Tab("Inference"):
@@ -58,34 +58,34 @@ with gr.Blocks() as app:
                 f0_method = gr.Dropdown(choices=["harvest", "pm", "crepe", "crepe-tiny", "mangio-crepe", "mangio-crepe-tiny", "rmvpe"], 
                                     value="rmvpe", 
                                     label="pitch_algorit", show_label=True)
-                vc_transform0 = gr.Slider(minimum=-12, label="Número de semitonos, subir una octava: 12, bajar una octava: -12", value=0, maximum=12, step=1)
+                vc_transform0 = gr.Slider(minimum=-12, label="Number of pitch, up one octave: 12, down one octave: -12", value=0, maximum=12, step=1)
                 protect0 = gr.Slider(
-                    minimum=0, maximum=0.5, label="Protejer las consonantes sordas y los sonidos respiratorios. 0.5 para desactivarlo.", value=0.33,
+                    minimum=0, maximum=0.5, label="Protect voiceless consonants and breath sounds. 0.5 to disable it.", value=0.33,
                     step=0.01,
                 interactive=True,
                 )
                 resample_sr1 = gr.Slider(
                     minimum=0,
                     maximum=48000,
-                    label="Re-muestreo sobre el audio de salida hasta la frecuencia de muestreo final. 0 para no re-muestrear.",
+                    label="Re-sampling the output audio up to the final sample rate. 0 to not resample.",
                     value=0,
                     step=1,
                     interactive=True,
                 )
                  
-        # Salida
+        # Exit
         with gr.Row():
-            vc_output1 = gr.Textbox(label="Salida")
-            vc_output2 = gr.Audio(label="Audio de salida")
+            vc_output1 = gr.Textbox(label="Exit")
+            vc_output2 = gr.Audio(label="Output Audio")
                             
-        btn = gr.Button(value="Convertir")
+        btn = gr.Button(value="Convert")
         btn.click(infer, inputs=[model_url, f0_method, audio_path, index_rate, vc_transform0, protect0, resample_sr1, filter_radius1], outputs=[vc_output1, vc_output2])
         
     with gr.TabItem("TTS"):
         with gr.Row():
             tts_text = gr.Textbox(
-                label="Texto:",
-                placeholder="Texto que deseas convertir a voz...",
+                label="text:",
+                placeholder="Text you want to convert to speech...",
                 lines=6,
             )
 
@@ -95,7 +95,7 @@ with gr.Blocks() as app:
                 
             with gr.Row():
                 tts_method = gr.Dropdown(choices=VOICE_METHODS, value="Edge-tts", label="Método TTS:", visible=True)
-                tts_model = gr.Dropdown(choices=EDGE_VOICES, label="Modelo TTS:", visible=True, interactive=True)
+                tts_model = gr.Dropdown(choices=EDGE_VOICES, label="TTS model:", visible=True, interactive=True)
                 tts_api_key = gr.Textbox(label="ElevenLabs Api key", show_label=True, placeholder="4a4afce72349680c8e8b6fdcfaf2b65a",interactive=True, visible=False)
             
             tts_coqui_languages = gr.Radio(
@@ -105,32 +105,32 @@ with gr.Blocks() as app:
                 visible=False
             )
             
-            tts_btn = gr.Button(value="Convertir")
+            tts_btn = gr.Button(value="Convert")
                 
             with gr.Row():
-                tts_vc_output1 = gr.Textbox(label="Salida")
-                tts_vc_output2 = gr.Audio(label="Audio de salida")   
+                tts_vc_output1 = gr.Textbox(label="clear")
+                tts_vc_output2 = gr.Audio(label="audio Output")   
             
         tts_btn.click(fn=tts_infer, inputs=[tts_text, tts_model_url, tts_method, tts_model, tts_api_key, tts_coqui_languages], outputs=[tts_vc_output1, tts_vc_output2])
         
-        tts_msg = gr.Markdown("""**Recomiendo que te crees una cuenta de eleven labs y pongas tu clave de api, es gratis y tienes 10k caracteres de limite al mes.** <br/>
-                ![Imgur](https://imgur.com/HH6YTu0.png)
+        tts_msg = gr.Markdown("""**I recommend that you create an Eleven Labs account and enter your API key, it is free and you have a 10k character limit per month.** <br/>
+
                 """, visible=False)
         
         tts_method.change(fn=update_tts_methods_voice, inputs=[tts_method], outputs=[tts_model, tts_msg, tts_api_key, tts_coqui_languages])
     
     with gr.TabItem("Youtube"):
-        gr.Markdown("## Convertir video de Youtube a audio")
+        gr.Markdown("## Convert Youtube video to audio")
         with gr.Row():
             yt_url = gr.Textbox(
-                label="Url del video:",
+                label="video URL:",
                 placeholder="https://www.youtube.com/watch?v=3vEiqil5d3Q"
             )
-        yt_btn = gr.Button(value="Convertir")
+        yt_btn = gr.Button(value="convert")
                 
         with gr.Row():
-            yt_output1 = gr.Textbox(label="Salida")
-            yt_output2 = gr.Audio(label="Audio de salida")   
+            yt_output1 = gr.Textbox(label="clear")
+            yt_output2 = gr.Audio(label="audio output")   
             
         yt_btn.click(fn=convert_yt_to_wav, inputs=[yt_url], outputs=[yt_output1, yt_output2])
          
@@ -142,27 +142,27 @@ with gr.Blocks() as app:
     #     # btn_enhance_audio.click(fn=audio_enhance, inputs=[enhance_input_audio], outputs=[enhance_output_audio])
         
         
-    with gr.Tab("Modelos"):
-        gr.HTML("<h4>Buscar modelos</h4>")
+    with gr.Tab("Models"):
+        gr.HTML("<h4>Search for models</h4>")
         search_name = gr.Textbox(placeholder="Billie Eillish (RVC v2 - 100 epoch)", label="Nombre", show_label=True)
          # Salida
         with gr.Row():
-            sarch_output = gr.Markdown(label="Salida")
+            sarch_output = gr.Markdown(label="clear output")
             
         btn_search_model = gr.Button(value="Buscar")
         btn_search_model.click(fn=search_model, inputs=[search_name], outputs=[sarch_output])
         
         gr.HTML("<h4>Publica tu modelo</h4>")
-        post_name = gr.Textbox(placeholder="Billie Eillish (RVC v2 - 100 epoch)", label="Nombre", show_label=True)
+        post_name = gr.Textbox(placeholder="Billie Eillish (RVC v2 - 100 epoch)", label="Name models", show_label=True)
         post_model_url = gr.Textbox(placeholder="https://huggingface.co/AIVER-SE/BillieEilish/resolve/main/BillieEilish.zip", label="Url del modelo", show_label=True)
-        post_creator = gr.Textbox(placeholder="ID de discord o enlace al perfil del creador", label="Creador", show_label=True)
+        post_creator = gr.Textbox(placeholder="Discord ID or link to creator's profile", label="creator", show_label=True)
         post_version = gr.Dropdown(choices=["RVC v1", "RVC v2"], value="RVC v1", label="Versión", show_label=True)
         
          # Salida
         with gr.Row():
-            post_output = gr.Markdown(label="Salida")
+            post_output = gr.Markdown(label="clear_output")
             
-        btn_post_model = gr.Button(value="Publicar")
+        btn_post_model = gr.Button(value="Post")
         btn_post_model.click(fn=post_model, inputs=[post_name, post_model_url, post_version, post_creator], outputs=[post_output])
                 
         #     with gr.Column():
@@ -216,5 +216,5 @@ with gr.Blocks() as app:
 
     
     
-    app.queue(concurrency_count=200, max_size=1022).launch()
+    app.queue(concurrency_count=200, max_size=1022).launch(share=True)
     #share=True
