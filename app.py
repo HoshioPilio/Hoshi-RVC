@@ -1,4 +1,4 @@
-import gradio as gr
+ import gradio as gr
 import os
 from constants import VOICE_METHODS, BARK_VOICES, EDGE_VOICES
 import platform
@@ -43,9 +43,8 @@ def convert_yt_to_wav(url):
     except Exception as e:
         return str(e), None
     
-with gr.Blocks() as app:
-    gr.HTML("<h1>  Hoshi-RVC - by Laynz28 💻 </h1>")
-    
+with gr.Blocks(theme=gr.themes.Soft(), title="Hoshi-RVC-Web") as app:
+    gr.HTML("<h1> Hoshi-RVC 💻 </h1>")
 
     with gr.Tab("Inference"):
         model_url = gr.Textbox(placeholder="https://huggingface.co/AIVER-SE/BillieEilish/resolve/main/BillieEilish.zip", label="Url voice models", show_label=True)
@@ -134,12 +133,12 @@ with gr.Blocks() as app:
             
         yt_btn.click(fn=convert_yt_to_wav, inputs=[yt_url], outputs=[yt_output1, yt_output2])
          
-    # with gr.TabItem("Mejora de audio"):
-    #     enhance_input_audio = gr.Audio(label="Audio de entrada")
-    #     enhance_output_audio = gr.Audio(label="Audio de salida")
+     with gr.TabItem("Audio enhancement"):
+         enhance_input_audio = gr.Audio(label="Input audio")
+         enhance_output_audio = gr.Audio(label="Output Audio")
 
-    #     btn_enhance_audio = gr.Button()
-    #     # btn_enhance_audio.click(fn=audio_enhance, inputs=[enhance_input_audio], outputs=[enhance_output_audio])
+         btn_enhance_audio = gr.Button()
+          btn_enhance_audio.click(fn=audio_enhance, inputs=[enhance_input_audio], outputs=[enhance_output_audio])
         
         
     with gr.Tab("Models"):
