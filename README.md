@@ -1,13 +1,30 @@
----
-title: SimpleRVC
-emoji: 🐨
-colorFrom: gray
-colorTo: blue
-sdk: gradio
-sdk_version: 3.50.2
-app_file: app.py
-pinned: false
-license: mit
----
+## Hoshi-RVC
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+
+# local install
+
+
+
+```
+git clone https://github.com/HoshioPilio/Hoshi-RVC.git
+```
+cd Hoshi-RVC
+```
+pip install -r requirements.txt
+```
+
+
+
+
+
+
+## credits
++ [ContentVec](https://github.com/auspicious3000/contentvec/)
++ [VITS](https://github.com/jaywalnut310/vits)
++ [HIFIGAN](https://github.com/jik876/hifi-gan)
++ [Gradio](https://github.com/gradio-app/gradio)
++ [FFmpeg](https://github.com/FFmpeg/FFmpeg)
++ [Ultimate Vocal Remover](https://github.com/Anjok07/ultimatevocalremovergui)
++ [audio-slicer](https://github.com/openvpi/audio-slicer)
++ [Mangio FORK](https://github.com/Mangio621/Mangio-RVC-Fork)
+
