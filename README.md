@@ -8,7 +8,10 @@
 ```
 git clone https://github.com/HoshioPilio/Hoshi-RVC.git
 ```
+```
 cd Hoshi-RVC
+```
+
 ```
 pip install -r requirements.txt
 ```
